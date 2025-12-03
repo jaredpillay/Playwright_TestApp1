@@ -1,0 +1,32 @@
+import { test, expect } from '@playwright/test';
+
+test('test to-do app', { tag: '@sanity' }, async ({ page }) => {
+  await page.goto('https://todomvc.com/examples/react/dist/');
+  await page.getByTestId('text-input').click();
+  await page.getByTestId('text-input').click();
+  await page.getByTestId('text-input').click();
+  await page.getByTestId('text-input').fill('Buy Goceries ');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('go for walk ');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('rest ');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('code');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByText('go for walk').click();
+  await page.getByText('go for walk').click();
+  await page.getByRole('listitem').filter({ hasText: 'go for walk' }).getByTestId('todo-item-toggle').check();
+  await page.getByRole('listitem').filter({ hasText: 'rest' }).getByTestId('todo-item-toggle').check();
+  await page.getByRole('link', { name: 'Active' }).click();
+  await page.getByText('Double-click to edit a todoCreated by the TodoMVC TeamPart of TodoMVC').click();
+  await page.getByRole('link', { name: 'Completed' }).click();
+  await page.getByRole('link', { name: 'Active' }).click();
+  await page.getByTestId('todo-list').getByText('code').click();
+  await expect(page.getByTestId('todo-list').getByText('code')).toBeVisible();
+  await expect(page.getByTestId('todo-list')).toContainText('Buy Goceries');
+  await expect(page.getByTestId('todo-list')).toContainText('code');
+  await page.locator('html').click();
+  await page.getByRole('button', { name: 'Clear completed' }).click();
+  await page.getByRole('link', { name: 'All' }).click();
+});
