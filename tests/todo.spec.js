@@ -34,5 +34,5 @@ test('to-do app - add, complete, and delete todos', { tag: '@sanity' }, async ({
   await expect(todoList).not.toContainText('Go for walk');
   await expect(todoList).not.toContainText('Code');
 
- // await expect(todoList).toHaveCount(4);
+ // await expect(todoList).toHaveCount(4); //Fail test example 
 });
