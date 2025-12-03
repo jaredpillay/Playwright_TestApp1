@@ -1,32 +1,38 @@
 import { test, expect } from '@playwright/test';
 
-test('test to-do app', { tag: '@sanity' }, async ({ page }) => {
+test('to-do app - add, complete, and delete todos', { tag: '@sanity' }, async ({ page }) => {
+  // Navigate to TodoMVC app
   await page.goto('https://todomvc.com/examples/react/dist/');
-  await page.getByTestId('text-input').click();
-  await page.getByTestId('text-input').click();
-  await page.getByTestId('text-input').click();
-  await page.getByTestId('text-input').fill('Buy Goceries ');
-  await page.getByTestId('text-input').press('Enter');
-  await page.getByTestId('text-input').fill('go for walk ');
-  await page.getByTestId('text-input').press('Enter');
-  await page.getByTestId('text-input').press('Enter');
-  await page.getByTestId('text-input').fill('rest ');
-  await page.getByTestId('text-input').press('Enter');
-  await page.getByTestId('text-input').fill('code');
-  await page.getByTestId('text-input').press('Enter');
-  await page.getByText('go for walk').click();
-  await page.getByText('go for walk').click();
-  await page.getByRole('listitem').filter({ hasText: 'go for walk' }).getByTestId('todo-item-toggle').check();
-  await page.getByRole('listitem').filter({ hasText: 'rest' }).getByTestId('todo-item-toggle').check();
-  await page.getByRole('link', { name: 'Active' }).click();
-  await page.getByText('Double-click to edit a todoCreated by the TodoMVC TeamPart of TodoMVC').click();
-  await page.getByRole('link', { name: 'Completed' }).click();
-  await page.getByRole('link', { name: 'Active' }).click();
-  await page.getByTestId('todo-list').getByText('code').click();
-  await expect(page.getByTestId('todo-list').getByText('code')).toBeVisible();
-  await expect(page.getByTestId('todo-list')).toContainText('Buy Goceries');
-  await expect(page.getByTestId('todo-list')).toContainText('code');
-  await page.locator('html').click();
+  
+  const todoInput = page.getByTestId('text-input');
+  const todoList = page.getByTestId('todo-list');
+
+  // Add three todos
+  await todoInput.fill('Buy Groceries');
+  await todoInput.press('Enter');
+  
+  await todoInput.fill('Go for walk');
+  await todoInput.press('Enter');
+  
+  await todoInput.fill('Code');
+  await todoInput.press('Enter');
+
+  // Mark todos as completed
+  await page.getByRole('listitem').filter({ hasText: 'Go for walk' }).getByTestId('todo-item-toggle').check();
+  await page.getByRole('listitem').filter({ hasText: 'Code' }).getByTestId('todo-item-toggle').check();
+
+  // Verify todos are in the list
+  await expect(todoList).toContainText('Buy Groceries');
+  await expect(todoList).toContainText('Go for walk');
+  await expect(todoList).toContainText('Code');
+
+  // Clear completed todos
   await page.getByRole('button', { name: 'Clear completed' }).click();
-  await page.getByRole('link', { name: 'All' }).click();
+
+  // Verify completed todos are removed
+  await expect(todoList).toContainText('Buy Groceries');
+  await expect(todoList).not.toContainText('Go for walk');
+  await expect(todoList).not.toContainText('Code');
+
+ // await expect(todoList).toHaveCount(4);
 });
